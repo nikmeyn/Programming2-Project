@@ -1,0 +1,7 @@
+#BlueJ class context
+comment0.params=inTemp
+comment0.target=LivingArea(double)
+comment0.text=\r\n\ Constructor\ for\ LivingArea\r\n
+comment1.params=eff\ year\ area\ env\ therm\ over
+comment1.target=double\ calcNewTemp(int,\ int,\ int,\ double,\ double,\ double)
+numComments=2

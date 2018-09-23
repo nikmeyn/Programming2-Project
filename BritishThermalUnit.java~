@@ -1,0 +1,27 @@
+public class BritishThermalUnit
+{
+    private int BTU;
+    public BritishThermalUnit(int year, int size)
+    {
+        if (year <= 1980)
+        {
+            if (size < 1300){BTU = 40000;}
+            else if (size < 1700) {BTU = 45000;}
+            else if (size < 2500) {BTU = 50000;}
+            else if (size < 3500) {BTU = 60000;}
+            else if (size < 4500) {BTU = 70000;}
+        }
+        else if (year > 1980)
+        {
+            if (size < 1300){BTU = 50000;}
+            else if (size < 1700) {BTU = 55000;}
+            else if (size < 2500) {BTU = 65000;}
+            else if (size < 3500) {BTU = 80000;}
+            else if (size < 4500) {BTU = 100000;}
+        }
+    }
+    public int getBTU()
+    {
+        return BTU;
+    }
+}

@@ -1,0 +1,166 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+public class UserInterface extends JFrame
+{
+    JLabel labelCapacity, labelEff, labelPilot, labelHeating, labelYear, labelRoomTemp, labelRuntime;
+    JLabel labelArea, labelSHC, labelBLC, labelEnvTemp, labelThermoTemp, labelOverheat, labelFreq; 
+    JTextField textCap, textEff, textPilot, textHeating, textYear, textArea, textSHC, textBLC;
+    JTextField textEnv, textThermo, textOverheat, textFreq, textRuntime, textRoomTemp;
+    JRadioButton elecBut, gasBut;
+    JButton startButton, closeButton;
+    ButtonGroup ftype;
+    JPanel wind;
+    private Timer timer1;
+    private  final int TIMER_DELAY = 5000;  // note that timer delay is in milliseconds
+    private int printCount =1; // to count the number of times it prints
+
+    public UserInt()
+    {
+        setSize(500,500);
+        setTitle("Home Heating Program");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocation(200,200);
+        createPanel();
+        add(wind);
+        setVisible(true);     
+    } 
+
+    public void createPanel()
+    {
+        wind = new JPanel();
+        wind.setLayout(new GridLayout(15,2));
+
+        labelCapacity = new JLabel("Gas Furnace Capacity", JLabel.RIGHT);
+        labelEff = new JLabel("Efficiency", JLabel.RIGHT);
+        labelPilot = new JLabel("Pilot on", JLabel.RIGHT);
+        labelHeating = new JLabel("Heating", JLabel.RIGHT);
+        labelYear = new JLabel("Year built", JLabel.RIGHT);
+        labelRoomTemp = new JLabel("Current Room Temperature(in Celsius)", JLabel.RIGHT);
+        labelArea = new JLabel("Room Area (in Square foot)", JLabel.RIGHT);
+        labelSHC = new JLabel ("Specific Heat Capacity", JLabel.RIGHT);
+        labelBLC = new JLabel ("BLC", JLabel.RIGHT);
+        labelEnvTemp = new JLabel ("Environment Temperature (in Celsius)", JLabel.RIGHT);
+        labelThermoTemp = new JLabel ("Thermostat Temp Setting (in Celsius)", JLabel.RIGHT);
+        labelOverheat = new JLabel ("Overheat setting", JLabel.RIGHT);
+        labelFreq = new JLabel ("Display Frequency(secs)", JLabel.RIGHT);
+        labelRuntime = new JLabel ("RunTime", JLabel.RIGHT);
+
+        textCap = new JTextField("Calculated BTU(40,000 - 75,000)");
+        textEff = new JTextField("Choose gas or electric");
+        textPilot = new JTextField("true");
+        textHeating = new JTextField();
+        textYear = new JTextField(4);
+        textRoomTemp = new JTextField(4);
+        textArea = new JTextField();
+        textSHC = new JTextField("1.0 BTU/sq. ft");
+        textBLC = new JTextField("4.0 BTU/sq. ft");
+        textEnv = new JTextField();
+        textThermo = new JTextField();
+        textOverheat = new JTextField();
+        textFreq = new JTextField();
+        textRuntime = new JTextField();
+
+        gasBut = new JRadioButton("Gas Furnace");
+        elecBut = new JRadioButton("Electric Furnace");
+        startButton = new JButton("Run");
+        closeButton = new JButton ("Close");
+
+        ftype = new ButtonGroup();
+        ftype.add(gasBut);
+        ftype.add(elecBut);
+
+        wind.add(labelCapacity);
+        wind.add(textCap);
+        wind.add(gasBut);
+        wind.add(elecBut);
+        wind.add(labelEff);
+        wind.add(textEff);
+        wind.add(labelHeating);
+        wind.add(textHeating);
+        wind.add(labelYear);
+        wind.add(textYear);
+        wind.add(labelArea);
+        wind.add(textArea);
+        wind.add(labelRoomTemp);
+        wind.add(textRoomTemp);
+        wind.add(labelSHC);
+        wind.add(textSHC);
+        wind.add(labelBLC);
+        wind.add(textBLC);
+        wind.add(labelEnvTemp);
+        wind.add(textEnv);
+        wind.add(labelThermoTemp);
+        wind.add(textThermo);
+        wind.add(labelOverheat);
+        wind.add(textOverheat);
+        wind.add(labelFreq);
+        wind.add(textFreq);
+        wind.add(labelRuntime);
+        wind.add(textRuntime);
+        wind.add(startButton);
+        wind.add(closeButton);
+
+        textSHC.setEditable(false);
+        textBLC.setEditable(false);
+        textEff.setEditable(false);
+        textCap.setEditable(false);
+        textPilot.setEditable(false);
+
+        gasBut.addActionListener(new GasEff());
+        elecBut.addActionListener(new ElecEff());
+        closeButton.addActionListener(new Close());
+        startButton.addActionListener(new Run());
+
+    }
+    private class GasEff implements ActionListener
+    {
+        public void actionPerformed(ActionEvent a)
+        {textEff.setText("90%");}
+    } 
+    private class ElecEff implements ActionListener
+    {
+        public void actionPerformed(ActionEvent a)
+        {textEff.setText("92%");}        
+    }
+    private class Close implements ActionListener
+    {
+        public void actionPerformed(ActionEvent a)
+        {System.exit(0);}        
+    }
+    private class Run implements ActionListener
+    {
+        Timer timer1;
+        public void actionPerformed(ActionEvent a)
+        {
+            int freq = Integer.parseInt(textFreq.getText());
+            int length = Integer.parseInt(textRuntime.getText());
+
+            int timer = freq * 1000;
+            timer1 = new Timer(timer, new TimerTestListener()); 
+
+            timer1.start();
+
+        }
+        private class TimerTestListener implements ActionListener
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                int year = Integer.parseInt(textYear.getText());
+                int area = Integer.parseInt(textArea.getText());
+                Furnace furn = new Furnace(year, area);
+                int freq = Integer.parseInt(textFreq.getText());
+                int length = Integer.parseInt(textRuntime.getText());
+                int cap = furn.getBTU();
+                textCap.setText(""+ cap);
+                if (printCount <= (length/freq)) // to control the number of times the action is performed
+                {
+                    System.out.println("Hi, I am printing every two seconds");
+                    printCount++;
+                }
+                else timer1.stop();  // stoping the timer if the condition is met
+            }
+        }
+    }
+
+}

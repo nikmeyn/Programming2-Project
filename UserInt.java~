@@ -1,0 +1,277 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.text.*;
+import java.lang.*;
+public class UserInt extends JFrame
+{
+    JLabel labelCapacity, labelEff, labelPilot, labelHeating, labelYear, labelRoomTemp, labelRuntime;
+    JLabel labelArea, labelSHC, labelBLC, labelEnvTemp, labelThermoTemp, labelOverheat, labelFreq; 
+    JTextField textCap, textEff, textPilot, textHeating, textYear, textArea, textSHC, textBLC;
+    JTextField textEnv, textThermo, textOverheat, textFreq, textRuntime, textRoomTemp;
+    JRadioButton elecBut, gasBut;
+    JButton startButton, closeButton;
+    ButtonGroup ftype;
+    JPanel wind;
+    private Timer timer1;
+    private  final int TIMER_DELAY = 5000;  // note that timer delay is in milliseconds
+    private int printCount =1; // to count the number of times it prints
+    DecimalFormat myFormat = new DecimalFormat("0.00");
+    public UserInt()
+    {
+        setSize(500,500);
+        setTitle("Home Heating Program");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocation(200,200);
+        createPanel();
+        add(wind);
+        setVisible(true);     
+    } 
+
+    public void createPanel()
+    {
+        wind = new JPanel();
+        wind.setLayout(new GridLayout(15,2));
+
+        labelCapacity = new JLabel("Gas Furnace Capacity", JLabel.RIGHT);
+        labelEff = new JLabel("Efficiency (in percentage)", JLabel.RIGHT);
+        labelPilot = new JLabel("Pilot on", JLabel.RIGHT);
+        labelHeating = new JLabel("Furnace status", JLabel.RIGHT);
+        labelYear = new JLabel("Year built", JLabel.RIGHT);
+        labelRoomTemp = new JLabel("Current Room Temperature(in Celsius)", JLabel.RIGHT);
+        labelArea = new JLabel("Room Area (in Square foot)", JLabel.RIGHT);
+        labelSHC = new JLabel ("Specific Heat Capacity (in BTU/sq. ft)", JLabel.RIGHT);
+        labelBLC = new JLabel ("Basic Load Constant (in BTU/sq. ft)", JLabel.RIGHT);
+        labelEnvTemp = new JLabel ("Environment Temperature (in Celsius)", JLabel.RIGHT);
+        labelThermoTemp = new JLabel ("Thermostat Temp Setting (in Celsius)", JLabel.RIGHT);
+        labelOverheat = new JLabel ("Overheat setting", JLabel.RIGHT);
+        labelFreq = new JLabel ("Display Frequency(secs)", JLabel.RIGHT);
+        labelRuntime = new JLabel ("RunTime", JLabel.RIGHT);
+        String furnOns = "OFF";
+        textCap = new JTextField("Calculated BTU(40,000 - 75,000)");
+        textEff = new JTextField("Choose gas or electric");
+        textPilot = new JTextField("true");
+        textHeating = new JTextField(furnOns);
+        textYear = new JTextField(4);
+        textRoomTemp = new JTextField(4);
+        textArea = new JTextField();
+        textSHC = new JTextField("1.0");
+        textBLC = new JTextField("4.0");
+        textEnv = new JTextField();
+        textThermo = new JTextField();
+        textOverheat = new JTextField();
+        textFreq = new JTextField();
+        textRuntime = new JTextField();
+
+        gasBut = new JRadioButton("Gas Furnace");
+        elecBut = new JRadioButton("Electric Furnace");
+        startButton = new JButton("Run");
+        closeButton = new JButton ("Close");
+
+        ftype = new ButtonGroup();
+        ftype.add(gasBut);
+        ftype.add(elecBut);
+
+        wind.add(labelCapacity);
+        wind.add(textCap);
+        wind.add(gasBut);
+        wind.add(elecBut);
+        wind.add(labelEff);
+        wind.add(textEff);
+        wind.add(labelHeating);
+        wind.add(textHeating);
+        wind.add(labelYear);
+        wind.add(textYear);
+        wind.add(labelArea);
+        wind.add(textArea);
+        wind.add(labelRoomTemp);
+        wind.add(textRoomTemp);
+        wind.add(labelSHC);
+        wind.add(textSHC);
+        wind.add(labelBLC);
+        wind.add(textBLC);
+        wind.add(labelEnvTemp);
+        wind.add(textEnv);
+        wind.add(labelThermoTemp);
+        wind.add(textThermo);
+        wind.add(labelOverheat);
+        wind.add(textOverheat);
+        wind.add(labelFreq);
+        wind.add(textFreq);
+        wind.add(labelRuntime);
+        wind.add(textRuntime);
+        wind.add(startButton);
+        wind.add(closeButton);
+
+        textSHC.setEditable(false);
+        textBLC.setEditable(false);
+        textEff.setEditable(false);
+        textCap.setEditable(false);
+        textPilot.setEditable(false);
+        textHeating.setEditable(false);
+
+        gasBut.addActionListener(new GasEff());
+        elecBut.addActionListener(new ElecEff());
+        closeButton.addActionListener(new Close());
+        startButton.addActionListener(new Run());
+
+    }
+    private class GasEff implements ActionListener
+    {
+        public void actionPerformed(ActionEvent a)
+        {textEff.setText("90");}
+    } 
+    private class ElecEff implements ActionListener
+    {
+        public void actionPerformed(ActionEvent a)
+        {textEff.setText("92");}        
+    }
+    private class Close implements ActionListener
+    {
+        public void actionPerformed(ActionEvent a)
+        {System.exit(0);}        
+    }
+    public class Run implements ActionListener
+    {
+        Timer timer1;
+
+        int eff;
+        int year;
+        int area;
+        double roomTemp;
+        double envTemp;
+        double thermoTemp;
+        double overH;
+        int freq;
+        int length;
+
+        Furnace furnace;
+        Environment environment;
+        Thermostat thermostat;
+        LivingArea room;
+        public void actionPerformed(ActionEvent a)
+        {           
+            boolean run = true;
+
+            while(run)
+            {
+                try{
+                    eff = Integer.parseInt(textEff.getText());
+                }
+                catch (NumberFormatException e)
+                {
+                    JOptionPane.showMessageDialog(null,"please select a furnace type", "Invalid furnace type", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+                try{
+                    year = Integer.parseInt(textYear.getText());
+                }
+                catch (NumberFormatException e)
+                {
+                    JOptionPane.showMessageDialog(null,"please enter a valid year", "Invalid year", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+                try{
+                    area = Integer.parseInt(textArea.getText());
+                }
+                catch (NumberFormatException e)
+                {
+                    JOptionPane.showMessageDialog(null,"please enter a valid area roundest to the nearest square foot", "Invalid area", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+                try{
+                    roomTemp = Double.parseDouble(textRoomTemp.getText());
+                }
+                catch (NumberFormatException e)
+                {
+                    JOptionPane.showMessageDialog(null,"please enter a valid room temperature", "Invalid room temperature", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+                try {envTemp = Double.parseDouble(textEnv.getText());}
+                catch (NumberFormatException e)
+                {
+                    JOptionPane.showMessageDialog(null,"please enter a valid value for the environment temperature", "Invalid environment temperature", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+                try {thermoTemp = Double.parseDouble(textThermo.getText());}
+                catch (NumberFormatException e)
+                {
+                    JOptionPane.showMessageDialog(null,"please enter a valid value for the thermostat temperature setting", "Invalid thermostat temperature setting", JOptionPane.ERROR_MESSAGE);
+                    break; 
+                }
+                try {overH = Double.parseDouble(textOverheat.getText());}
+                catch (NumberFormatException e)
+                {
+                    JOptionPane.showMessageDialog(null,"please enter a valid value for the overheat setting", "Invalid overheat setting", JOptionPane.ERROR_MESSAGE);
+                    break; 
+                }
+                try {freq = Integer.parseInt(textFreq.getText());}
+                catch (NumberFormatException e)
+                {
+                    JOptionPane.showMessageDialog(null,"please enter the frequency at which you want the statements to print", "Invalid frequency", JOptionPane.ERROR_MESSAGE);
+                    break; 
+                }
+                try {length = Integer.parseInt(textRuntime.getText());}
+                catch (NumberFormatException e)
+                {
+                    JOptionPane.showMessageDialog(null,"please enter the duration of the program", "Invalid run time", JOptionPane.ERROR_MESSAGE);
+                    break; 
+                }
+                furnace = new Furnace(year, area);
+                environment = new Environment(envTemp);
+                thermostat = new Thermostat (thermoTemp, overH);
+                room = new LivingArea (roomTemp);
+                run = false;
+
+                int timerC = freq * 60;
+                int timer = freq * 1000;
+                timer1 = new Timer(timer, new TimerTestListener()); 
+
+                textCap.setText(""+ furnace.getCap());
+                System.out.println("Time\t\tInside\t\tOutside\t\tFurnace Status");
+                System.out.println("----\t\t------\t\t-------\t\t------------");
+                System.out.println("0\t\t" + roomTemp +"\t\t"+ envTemp + "\t\tOFF"); 
+                timer1.start();
+
+                timerC = freq * 60;  
+                double currentTemp = roomTemp;
+            }
+
+
+        }
+        private class TimerTestListener implements ActionListener
+        {
+
+            int count = 0;
+            int timerC = freq * 60;  
+            double currentTemp = roomTemp;
+
+            public void actionPerformed(ActionEvent e)
+            {
+
+                currentTemp = room.calcNewTemp(eff, year, area, envTemp, thermoTemp,overH); 
+
+                if (printCount <= (length/300)) // to control the number of times the action is performed
+                {
+                    int switcheS = thermostat.setSwitch(currentTemp);
+
+                    if (switcheS == 1)
+                    {
+                        System.out.println(timerC+"\t\t"+ myFormat.format(currentTemp)+"\t\t"+ envTemp +"\t\tON");
+                    }
+                    else
+                    {
+                        System.out.println(timerC+"\t\t"+ myFormat.format(currentTemp)+"\t\t"+ envTemp +"\t\tOFF");
+                    }
+                    printCount++;
+                    timerC += 300;
+                }
+                else timer1.stop();  // stopping the timer if the condition is met
+
+            }
+        }
+
+    }
+
+}
+

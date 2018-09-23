@@ -1,0 +1,24 @@
+public class Environment
+{
+    
+    private double environTemp;
+    private double qLoss;
+    
+    public Environment (double outTemp)
+    {
+        environTemp = outTemp;
+    }
+    public void setTemp(double outTemp)
+    {
+        environTemp = outTemp;
+    }
+    public double getTemp()
+    {
+        return environTemp;
+    }
+    public double getHeatLoss(int flrArea, double rmTemp,  int time)
+    {
+       qLoss =  ( 1.0  * flrArea * (rmTemp - environTemp)) * (time/3600);
+       return qLoss;
+    }
+}

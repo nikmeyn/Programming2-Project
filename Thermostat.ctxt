@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.params=set\ over
+comment0.target=Thermostat(double,\ double)
+comment0.text=\r\n\ Constructor\ for\ Thermostat\r\n
+comment1.params=
+comment1.target=double\ getThresh()
+comment2.params=temp
+comment2.target=int\ setSwitch(double)
+numComments=3

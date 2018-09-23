@@ -1,0 +1,8 @@
+#BlueJ class context
+comment0.params=
+comment0.target=UserInt()
+comment0.text=\r\n\ Constructor\ for\ UserInt\r\n
+comment1.params=
+comment1.target=void\ createPanel()
+comment1.text=\r\nCreates\ the\ window\r\n
+numComments=2

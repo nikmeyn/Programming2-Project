@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.params=year\ size
+comment0.target=Furnace(int,\ int)
+comment0.text=\r\n\ Constructor\ for\ Furnace\r\n
+comment1.params=
+comment1.target=int\ getCap()
+comment2.params=eff\ time
+comment2.target=double\ getBTU(double,\ double)
+numComments=3

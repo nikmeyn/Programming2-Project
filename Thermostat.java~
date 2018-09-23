@@ -1,0 +1,51 @@
+public class Thermostat
+{
+    private double setting;
+    private double overHeat;    
+    private double thresh;;
+    LivingArea room;
+    int eff;
+    int year;
+    int area;
+    double roomTemp;
+    double envTemp;
+    double thermoTemp;
+    double overH;
+    private int furnSwitch = 2;
+
+    public Thermostat (double set, double over)
+    {
+
+        setting = set;
+        overHeat = over;
+
+        thresh = setting + overHeat;
+
+    }
+
+    public double getThresh()
+    {
+        return thresh;
+    }
+
+    public int setSwitch(double temp)
+    {
+        //room = new LivingArea(setting);
+        double currTemp = temp;
+
+        if (currTemp < thresh && furnSwitch == 2)
+        {
+            furnSwitch = 1;
+        }
+        if (currTemp <= setting && furnSwitch ==2)
+        {
+            furnSwitch =1;
+        }
+        if (currTemp >= thresh)
+        {
+            furnSwitch =2;
+        }
+        
+        return furnSwitch;
+    }
+}
